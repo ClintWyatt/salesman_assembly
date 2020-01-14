@@ -33,16 +33,16 @@ main PROC
 	call WriteString		; write msg1 to the terminal
 	call Readint			; EAX = row number, will point to the first number in the row
 	cmp al, -1				; compare sales person to -1
-	je L2					; if -1, sum up the rows
-	mov row, al				; else, continue
+	je L2					; if -1, jump to L2 and go to the calc_row_sum procedure
+	mov row, al				; move the value of the al (in eax) to row
 	mov edx, OFFSET msg2	; move the second message into edx
-	call WriteString		; write msg2 to the terminal
+	call WriteString		; write "enter the product number" to the terminal
 	call Readint			; read input, which goes into eax
-	mov column, al			; move al register to column
+	mov column, al			; move the value of the al register to column
 	mov edx, OFFSET msg3	; move the thrid message into edx
-	call WriteString		; write msg3 (edx) to the terminal
-	call Readint			; read input
-	mov sum, al				; move sum to the al register
+	call WriteString		; write "Enter the sum : " to the terminal
+	call Readint			; read input for the sum
+	mov sum, al				; move the value in the al register (part of eax) into the sum variable
 	
 	invoke enterData, row, column, sum		; go to the enterData procedure
 	loop L1
@@ -63,12 +63,12 @@ enterData PROC, rowIndex:BYTE, columnIndex:BYTE, sm:BYTE
 
 	dec rowIndex					; decrement the row by 1
 	dec ColumnIndex					; decrement the column by 1
-	mov	  ebx,OFFSET tableB			; memory location of the 2d array
+	mov	  ebx, OFFSET tableB		; moving the 2d array onto ebx register 
 	movzx   eax, rowIndex			; mov the row index to eax
-	mov	  ecx,RowSize				; ecx is 5, same as row size
-	mul	  ecx						; row index * row size
-	add	  ebx, eax					; row offset
-	movzx   esi, columnIndex		; row index
+	mov	  ecx, RowSize				; ecx is 5, same as row size
+	mul	  ecx						; row index * row size. When using mul, the result is placed in eax: eax = eax * ecx
+	add	  ebx, eax					; row offset, adding eax to ebx
+	movzx   esi, columnIndex		; moving column index to esi
 	mov al, sm						; moving the sum to the al register
 	mov BYTE PTR[ebx + esi], al		; moving the sum to the index of the "2d" array
 
